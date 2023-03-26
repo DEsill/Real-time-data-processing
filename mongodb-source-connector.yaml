@@ -1,0 +1,19 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: mongodb-source-connector
+  namespace: <your_namespace>
+  labels:
+    strimzi.io/cluster: my-connect-cluster
+spec:
+  class: com.mongodb.kafka.connect.MongoSourceConnector
+  tasksMax: 2
+  config:
+    connection.uri: <your_mongo_connection_string>
+    database: <your_mongo_database>
+    collection: <your_mongo_collection>
+    topic.prefix: mongo
+    change.stream.full.document: updateLookup
+    publish.full.document.only: true
+    pipeline: >
+      [{"$match":{"operationType":{"$in":["insert","update","replace"]}}},{"$project":{"_id":1,"fullDocument":1,"ns":1,"documentKey":1}}]
