@@ -1,0 +1,22 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: my-connect-cluster
+  namespace: kafka-sill
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  image: abhirockzz/strimzi-kafkaconnect-mongodb:latest
+  version: 2.4.0
+  replicas: 1
+  bootstrapServers: my-cluster-kafka-bootstrap:9092
+  config:
+    group.id: source-my-connect-cluster
+    offset.storage.topic: source-my-connect-cluster-offsets
+    config.storage.topic: source-my-connect-cluster-configs
+    status.storage.topic: source-my-connect-cluster-status
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+    config.storage.replication.factor: 1
+    offset.storage.replication.factor: 1
+    status.storage.replication.factor: 1
